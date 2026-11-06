@@ -1356,12 +1356,14 @@
             waitlistSubmit.disabled = true;
             waitlistMsg.textContent = 'Sending…';
             try {
-                // Apps Script doesn't return CORS headers for every response, so send it
-                // "no-cors": the row is still written; we just can't read the reply.
-                await fetch(WAITLIST_ENDPOINT, { method: 'POST', mode: 'no-cors', body: data });
+                // Read Apps Script's JSON reply so we only claim success when a row was written.
+                const res = await fetch(WAITLIST_ENDPOINT, { method: 'POST', body: data });
+                const reply = await res.json();
+                if (!reply.ok) throw new Error(reply.error || 'not saved');
                 waitlistForm.reset();
                 waitlistMsg.textContent = "You're on the list. We'll be in touch.";
             } catch (err) {
+                console.error('Waitlist signup failed:', err);
                 waitlistMsg.textContent = 'Something went wrong. Please try again.';
                 waitlistMsg.classList.add('error');
             } finally {
