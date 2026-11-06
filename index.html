@@ -269,6 +269,36 @@
             text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
         }
 
+        /* Desktop: round close button pinned to the game frame's top-right corner */
+        @media screen and (min-width: 769px) {
+            #gameLightbox .lightbox-close {
+                top: calc((100vh - 88vh) / 2);
+                top: calc((100dvh - 88dvh) / 2);
+                right: calc((100vw - min(94vw, 1280px)) / 2);
+                transform: translate(40%, -40%);
+                width: 44px;
+                height: 44px;
+                display: grid;
+                place-items: center;
+                font-size: 30px;
+                line-height: 1;
+                color: #6A3138;
+                background: #E1CEAB;
+                border: 2px solid #6A3138;
+                border-radius: 50%;
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+                text-shadow: none;
+                padding-bottom: 3px;
+            }
+
+            #gameLightbox .lightbox-close:hover {
+                color: #E1CEAB;
+                background: #6A3138;
+                border-color: #E1CEAB;
+                transform: translate(40%, -40%) scale(1.08);
+            }
+        }
+
         @media screen and (max-width: 768px) {
             #gameLightbox .game-frame {
                 width: 100vw;
