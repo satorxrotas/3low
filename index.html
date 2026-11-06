@@ -176,6 +176,49 @@
             transform: translateY(100%);
         }
 
+        /* Video section — slides up over the product panel */
+        .video-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #6A3138;
+            z-index: 20;
+            transform: translateY(100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px 85px;
+        }
+
+        .video-wrap {
+            width: min(90vw, calc((100vh - 205px) * 16 / 9));
+            aspect-ratio: 16 / 9;
+            border-radius: 20px;
+            overflow: hidden;
+            outline: 2px solid #E1CEAB;
+            background: #000;
+        }
+
+        .video-wrap video {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        @media screen and (max-width: 768px) {
+            .video-section {
+                padding: 80px 16px 60px;
+            }
+
+            .video-wrap {
+                width: min(100%, calc((100vh - 180px) * 16 / 9));
+                border-radius: 12px;
+            }
+        }
+
         .gameboard {
             position: fixed;
             top: 150px;
@@ -755,6 +798,14 @@
         </a>
     </div>
 
+    <div class="video-section">
+        <div class="video-wrap">
+            <video id="sectionVideo" controls muted playsinline preload="metadata" poster="3low_video_poster.jpg">
+                <source src="3low_video.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
 
 
 
@@ -774,6 +825,18 @@
         
         // Set the GIF source
         frameImage.src = 'DiceGifSlowMo_01.gif';
+
+        // Video section: autoplays muted when revealed, pauses when scrolled away.
+        // If the viewer pauses it themselves, it stays paused until they press play.
+        const videoSection = document.querySelector('.video-section');
+        const sectionVideo = document.getElementById('sectionVideo');
+        let videoUserPaused = false;
+        let autoPausing = false;
+        sectionVideo.addEventListener('pause', () => {
+            if (!autoPausing && !sectionVideo.ended) videoUserPaused = true;
+            autoPausing = false;
+        });
+        sectionVideo.addEventListener('play', () => { videoUserPaused = false; });
 
         // Handle scroll event
         window.addEventListener('scroll', () => {
@@ -913,6 +976,19 @@
                 footer.style.bottom = '0px'; // Slide to visible position
             } else {
                 footer.style.bottom = '-85px'; // Keep off screen
+            }
+
+            // Slide video section up over the product panel (50% → 65% scroll)
+            const videoProgress = Math.min(Math.max((scrollFraction - 0.5) / 0.15, 0), 1);
+            videoSection.style.transform = `translateY(${100 - videoProgress * 100}%)`;
+            if (videoProgress === 1) {
+                if (sectionVideo.paused && !videoUserPaused) {
+                    autoPausing = false;
+                    sectionVideo.play().catch(() => {});
+                }
+            } else if (videoProgress < 0.5 && !sectionVideo.paused) {
+                autoPausing = true;
+                sectionVideo.pause();
             }
 
             progressBar.style.width = (scrollFraction * 100) + '%';
