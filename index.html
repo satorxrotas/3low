@@ -215,6 +215,74 @@
             color: #6A3138;
         }
 
+        /* Rules section — slides up over the video section */
+        .rules-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #E1CEAB;
+            z-index: 25;
+            transform: translateY(100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 116px 20px 105px;
+        }
+
+        .rules-section img {
+            max-width: min(100%, 1400px);
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+            outline: 2px solid #6A3138;
+            cursor: zoom-in;
+        }
+
+        @media screen and (max-width: 768px) {
+            .rules-section {
+                padding: 116px 12px 80px;
+            }
+
+            .rules-section img {
+                border-radius: 8px;
+            }
+        }
+
+        /* Game lightbox (PLAY button) */
+        #gameLightbox .game-frame {
+            width: min(94vw, 1280px);
+            height: 88vh;
+            height: 88dvh;
+            border: 2px solid #E1CEAB;
+            border-radius: 14px;
+            background: #000;
+            display: block;
+        }
+
+        #gameLightbox .lightbox-close {
+            z-index: 1;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+        }
+
+        @media screen and (max-width: 768px) {
+            #gameLightbox .game-frame {
+                width: 100vw;
+                height: 100vh;
+                height: 100dvh;
+                border: none;
+                border-radius: 0;
+            }
+
+            #gameLightbox .lightbox-close {
+                top: 6px;
+                right: 14px;
+            }
+        }
+
         /* Video section — slides up over the product panel */
         .video-section {
             position: fixed;
@@ -777,7 +845,7 @@
     </nav>
 <footer id="footer">
         <div class="footer-buttons">
-            <img src="button_image.png" alt="View Image" class="footer-btn" id="imageBtn">
+            <img src="button_play.png" alt="Play" class="footer-btn" id="playBtn">
             <img src="button_video.png" alt="View Video" class="footer-btn" id="videoBtn">
         </div>
     </footer>
@@ -795,6 +863,12 @@
         <img class="lightbox-content" id="lightboxImage" src="placeholder.jpg" alt="Lightbox Image">
     </div>
     
+    <!-- Lightbox for Game (PLAY) — iframe loads on first open -->
+    <div id="gameLightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <iframe class="game-frame" id="gameFrame" title="3LOW Practice Table" allow="fullscreen"></iframe>
+    </div>
+
     <!-- Lightbox for Video -->
     <div id="videoLightbox" class="lightbox">
         <span class="lightbox-close">&times;</span>
@@ -841,6 +915,10 @@
         </a>
     </div>
 
+    <div class="rules-section">
+        <img src="placeholder.jpg" alt="3LOW rules — steps 1 through 8" id="rulesImage">
+    </div>
+
     <div class="video-section">
         <div class="video-wrap">
             <video id="sectionVideo" controls muted playsinline preload="metadata" poster="3low_video_poster.jpg">
@@ -882,10 +960,34 @@
         sectionVideo.addEventListener('play', () => { videoUserPaused = false; });
 
         // Handle scroll event
+        // Animations are timed against the original 8000px scroll length so the
+        // hero → product pacing feels the same; the page itself now ends right
+        // after the rules section lands, cutting the old dead scroll.
+        const VIDEO_START = 0.22; // video starts sliding up (just after the product panel settles)
+        const VIDEO_END = 0.30;   // video fully in view
+        const RULES_START = 0.34; // rules start sliding up over the video
+        const RULES_END = 0.42;   // rules fully in view — page ends shortly after
+        const rulesSection = document.querySelector('.rules-section');
+        function timelineLength() {
+            return 8000 + (window.innerWidth <= 768 ? 350 : 0) - window.innerHeight;
+        }
+        function sizeScrollContainer() {
+            const sc = document.querySelector('.scroll-container');
+            sc.style.paddingBottom = '0px';
+            sc.style.height = (timelineLength() * RULES_END + window.innerHeight + 200) + 'px';
+        }
+        sizeScrollContainer();
+        window.addEventListener('resize', () => {
+            sizeScrollContainer();
+            window.dispatchEvent(new Event('scroll'));
+        });
+
         window.addEventListener('scroll', () => {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollHeight = timelineLength();
             const scrollFraction = scrollTop / scrollHeight;
+            const pageScrollable = document.documentElement.scrollHeight - window.innerHeight;
+            const pageFraction = pageScrollable > 0 ? Math.min(scrollTop / pageScrollable, 1) : 0;
             
             // Move the frame container from above viewport to below viewport
             const frameContainer = document.querySelector('.frame-container');
@@ -1021,20 +1123,22 @@
                 footer.style.bottom = '-85px'; // Keep off screen
             }
 
-            // Slide video section up over the product panel (50% → 65% scroll)
-            const videoProgress = Math.min(Math.max((scrollFraction - 0.5) / 0.15, 0), 1);
+            // Slide video section up over the product panel, then rules over the video
+            const videoProgress = Math.min(Math.max((scrollFraction - VIDEO_START) / (VIDEO_END - VIDEO_START), 0), 1);
             videoSection.style.transform = `translateY(${100 - videoProgress * 100}%)`;
-            if (videoProgress === 1) {
+            const rulesProgress = Math.min(Math.max((scrollFraction - RULES_START) / (RULES_END - RULES_START), 0), 1);
+            rulesSection.style.transform = `translateY(${100 - rulesProgress * 100}%)`;
+            if (videoProgress === 1 && rulesProgress < 0.5) {
                 if (sectionVideo.paused && !videoUserPaused) {
                     autoPausing = false;
                     sectionVideo.play().catch(() => {});
                 }
-            } else if (videoProgress < 0.5 && !sectionVideo.paused) {
+            } else if ((videoProgress < 0.5 || rulesProgress >= 0.5) && !sectionVideo.paused) {
                 autoPausing = true;
                 sectionVideo.pause();
             }
 
-            progressBar.style.width = (scrollFraction * 100) + '%';
+            progressBar.style.width = (pageFraction * 100) + '%';
             
             if (scrollFraction > 0.05) {
                 instruction.style.opacity = '0';
@@ -1056,14 +1160,28 @@
         // Lightbox functionality
         const imageLightbox = document.getElementById('imageLightbox');
         const videoLightbox = document.getElementById('videoLightbox');
-        const imageBtn = document.getElementById('imageBtn');
+        const rulesImage = document.getElementById('rulesImage');
+        const gameLightbox = document.getElementById('gameLightbox');
+        const gameFrame = document.getElementById('gameFrame');
+        const playBtn = document.getElementById('playBtn');
         const videoBtn = document.getElementById('videoBtn');
         const lightboxVideo = document.getElementById('lightboxVideo');
 
-        // Open image lightbox
-        imageBtn.addEventListener('click', () => {
+        // Open rules image full size
+        rulesImage.addEventListener('click', () => {
             imageLightbox.style.display = 'flex';
         });
+
+        // Open game lightbox (loads the game the first time only, keeps progress after)
+        playBtn.addEventListener('click', () => {
+            if (!gameFrame.getAttribute('src')) gameFrame.src = 'play.html';
+            gameLightbox.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+        function closeGame() {
+            gameLightbox.style.display = 'none';
+            document.body.style.overflow = '';
+        }
 
         // Open video lightbox
         videoBtn.addEventListener('click', () => {
@@ -1077,16 +1195,18 @@
             btn.addEventListener('click', function() {
                 imageLightbox.style.display = 'none';
                 videoLightbox.style.display = 'none';
+                closeGame();
                 lightboxVideo.pause();
                 lightboxVideo.currentTime = 0;
             });
         });
 
         // Close lightboxes when clicking outside the content
-        [imageLightbox, videoLightbox].forEach(lightbox => {
+        [imageLightbox, videoLightbox, gameLightbox].forEach(lightbox => {
             lightbox.addEventListener('click', function(e) {
                 if (e.target === this) {
                     this.style.display = 'none';
+                    if (this === gameLightbox) closeGame();
                     lightboxVideo.pause();
                     lightboxVideo.currentTime = 0;
                 }
@@ -1098,6 +1218,7 @@
             if (e.key === 'Escape') {
                 imageLightbox.style.display = 'none';
                 videoLightbox.style.display = 'none';
+                closeGame();
                 lightboxVideo.pause();
                 lightboxVideo.currentTime = 0;
             }
@@ -1116,8 +1237,7 @@
         const heroArrow = document.querySelector('.hero-arrow');
         heroArrow.addEventListener('click', () => {
             // Calculate scroll position where beige section is fully visible (20% of total scroll)
-            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const targetScroll = scrollHeight * 0.2; // 20% scroll position
+            const targetScroll = timelineLength() * 0.2; // where the beige section is fully in
             
             window.scrollTo({
                 top: targetScroll,
