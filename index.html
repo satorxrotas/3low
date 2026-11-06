@@ -176,6 +176,45 @@
             transform: translateY(100%);
         }
 
+        /* Version switcher tab — hangs from the bottom of the header */
+        .version-tabs {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+            padding: 4px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            z-index: 55;
+        }
+
+        .version-tabs a {
+            padding: 5px 14px;
+            border-radius: 8px;
+            color: #E1CEAB;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .version-tabs a:hover {
+            background-color: rgba(225, 206, 171, 0.15);
+        }
+
+        .version-tabs a.active {
+            background-color: #E1CEAB;
+            color: #6A3138;
+        }
+
         /* Video section — slides up over the product panel */
         .video-section {
             position: fixed;
@@ -732,6 +771,10 @@
             <img src="image_2.png" alt="by MYNDVICE" class="right-corner-logo" style="position: static; transform: none;">
         </a>
 </header>
+    <nav class="version-tabs" aria-label="Site version">
+        <a href="index.html" class="active" aria-current="page">Version 1</a>
+        <a href="v2.html">Version 2</a>
+    </nav>
 <footer id="footer">
         <div class="footer-buttons">
             <img src="button_image.png" alt="View Image" class="footer-btn" id="imageBtn">
