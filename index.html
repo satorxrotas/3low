@@ -364,6 +364,70 @@
             font-size: 11px;
             opacity: 0.75;
             margin-top: -8px;
+            transition: font-size 0.5s ease 0.25s, opacity 0.5s ease 0.25s, margin 0.5s ease 0.25s;
+        }
+
+        /* Success: fields fold up and fade, confirmation + privacy note settle in the middle */
+        .waitlist-card {
+            transition: padding 0.5s ease, gap 0.5s ease;
+        }
+
+        .wl-fields,
+        .wl-done {
+            display: grid;
+            grid-template-rows: 1fr;
+            transition: grid-template-rows 0.5s ease, opacity 0.35s ease, transform 0.5s ease;
+        }
+
+        .wl-inner {
+            min-height: 0;
+            overflow: hidden;
+            display: grid;
+            gap: 14px;
+        }
+
+        .wl-done {
+            grid-template-rows: 0fr;
+            margin-top: -14px; /* cancel the card's gap while collapsed */
+            opacity: 0;
+            transform: translateY(10px);
+            text-align: center;
+        }
+
+        .waitlist-card.done {
+            gap: 0;
+            padding: 40px 28px;
+            text-align: center;
+        }
+
+        .waitlist-card.done .wl-fields {
+            grid-template-rows: 0fr;
+            opacity: 0;
+            transform: translateY(-14px);
+            pointer-events: none;
+        }
+
+        .waitlist-card.done .wl-done {
+            grid-template-rows: 1fr;
+            margin-top: 0;
+            opacity: 1;
+            transform: none;
+            transition-delay: 0.25s;
+        }
+
+        .waitlist-card.done .wl-done h2 {
+            margin-bottom: 12px;
+        }
+
+        .waitlist-card.done .wl-note {
+            font-size: 15px;
+            opacity: 1;
+            margin-top: 0;
+            line-height: 1.5;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .waitlist-card, .wl-fields, .wl-done, .wl-note { transition: none; }
         }
 
         .wl-msg.error {
@@ -965,13 +1029,22 @@
     <div id="waitlistLightbox" class="lightbox">
         <span class="lightbox-close">&times;</span>
         <form class="waitlist-card" id="waitlistForm" novalidate>
-            <h2>Join the waitlist</h2>
-            <p class="wl-sub">Be first to know when 3-LOW drops.</p>
-            <label>Name<input type="text" name="name" autocomplete="name" maxlength="200"></label>
-            <label>Email<input type="email" name="email" autocomplete="email" required maxlength="320"></label>
-            <input type="text" name="website" class="wl-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <button type="submit" id="waitlistSubmit">JOIN WAITLIST</button>
-            <p class="wl-msg" id="waitlistMsg" role="status" aria-live="polite"></p>
+            <!-- Entry fields: collapse away once the signup is saved -->
+            <div class="wl-fields" id="waitlistFields">
+                <div class="wl-inner">
+                    <h2>Join the waitlist</h2>
+                    <p class="wl-sub">Be first to know when 3-LOW drops.</p>
+                    <label>Name<input type="text" name="name" autocomplete="name" maxlength="200"></label>
+                    <label>Email<input type="email" name="email" autocomplete="email" required maxlength="320"></label>
+                    <input type="text" name="website" class="wl-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+                    <button type="submit" id="waitlistSubmit">JOIN WAITLIST</button>
+                    <p class="wl-msg" id="waitlistMsg" role="status" aria-live="polite"></p>
+                </div>
+            </div>
+            <!-- Shown after a successful signup -->
+            <div class="wl-done" aria-live="polite">
+                <div class="wl-inner"><h2>You're on the list</h2></div>
+            </div>
             <p class="wl-note">We'll only use your email for 3-LOW updates. Unsubscribe anytime.</p>
         </form>
     </div>
@@ -1361,7 +1434,9 @@
                 const reply = await res.json();
                 if (!reply.ok) throw new Error(reply.error || 'not saved');
                 waitlistForm.reset();
-                waitlistMsg.textContent = "You're on the list. We'll be in touch.";
+                waitlistMsg.textContent = '';
+                waitlistForm.classList.add('done');
+                document.getElementById('waitlistFields').inert = true;
             } catch (err) {
                 console.error('Waitlist signup failed:', err);
                 waitlistMsg.textContent = 'Something went wrong. Please try again.';
