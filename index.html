@@ -229,7 +229,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 116px 20px 105px;
+            padding: 96px 20px 105px;
         }
 
         .rules-section img {
@@ -245,7 +245,7 @@
 
         @media screen and (max-width: 768px) {
             .rules-section {
-                padding: 116px 12px 80px;
+                padding: 96px 12px 80px;
             }
 
             .rules-section img {
@@ -284,6 +284,94 @@
             }
         }
 
+        /* Waitlist form lightbox */
+        .waitlist-card {
+            width: min(420px, 92vw);
+            background: #E1CEAB;
+            color: #6A3138;
+            border: 2px solid #6A3138;
+            border-radius: 14px;
+            padding: 28px 24px 22px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .waitlist-card h2 {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        .wl-sub {
+            font-size: 14px;
+            margin-top: -6px;
+        }
+
+        .waitlist-card label {
+            display: grid;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .waitlist-card input {
+            font: 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #2B1417;
+            background: #F3E7D3;
+            border: 2px solid #6A3138;
+            border-radius: 6px;
+            padding: 11px 12px;
+        }
+
+        .waitlist-card input:focus {
+            outline: 3px solid rgba(106, 49, 56, 0.35);
+            outline-offset: 1px;
+        }
+
+        .waitlist-card button {
+            margin-top: 4px;
+            background-color: #6A3138;
+            color: #E1CEAB;
+            border: 2px solid #6A3138;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .waitlist-card button:hover {
+            background-color: #E1CEAB;
+            color: #6A3138;
+        }
+
+        .waitlist-card button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .wl-msg {
+            font-size: 14px;
+            min-height: 1.4em;
+        }
+
+        .wl-msg.error {
+            color: #B3261E;
+        }
+
+        .wl-hp {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+        }
+
         /* Video section — slides up over the product panel */
         .video-section {
             position: fixed;
@@ -297,11 +385,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 116px 20px 85px;
+            padding: 96px 20px 85px;
         }
 
         .video-wrap {
-            width: min(90vw, calc((100vh - 241px) * 16 / 9));
+            width: min(90vw, calc((100vh - 221px) * 16 / 9));
             aspect-ratio: 16 / 9;
             border-radius: 20px;
             overflow: hidden;
@@ -318,11 +406,11 @@
 
         @media screen and (max-width: 768px) {
             .video-section {
-                padding: 116px 16px 60px;
+                padding: 96px 16px 60px;
             }
 
             .video-wrap {
-                width: min(100%, calc((100vh - 216px) * 16 / 9));
+                width: min(100%, calc((100vh - 196px) * 16 / 9));
                 border-radius: 12px;
             }
         }
@@ -353,7 +441,7 @@
 
         .product-description {
             position: fixed;
-            top: 315px;
+            top: 215px;
             right: -100%;
             max-width: 400px;
             width: 90%;
@@ -367,7 +455,7 @@
 
         .add-to-cart-btn {
             position: fixed;
-            top: 490px;
+            top: 390px;
             right: -100%;
             z-index: 15;
             transition: right 0.5s ease-out;
@@ -632,7 +720,7 @@
             }
 
             .product-description {
-                top: 535px;
+                top: 450px;
                 left: -100%;
                 right: auto;
                 transform: translateX(0);
@@ -649,7 +737,7 @@
             }
 
             .add-to-cart-btn {
-                top: 725px;
+                top: 640px;
                 left: -100%;
                 right: auto;
                 transform: translateX(0);
@@ -719,7 +807,7 @@
 
             /* Stack gameboard on top, centered */
             .gameboard {
-                top: 130px;
+                top: 100px;
                 left: -100%;
                 transform: translateX(0);
                 max-width: 259px;
@@ -731,7 +819,7 @@
             }
 
             .product-text {
-                top: 430px;
+                top: 400px;
                 left: -100%;
                 transform: translateX(0);
                 max-width: 250px;
@@ -759,7 +847,7 @@
             }
 
             .product-description {
-                top: 560px;
+                top: 450px;
                 left: -100%;
                 transform: translateX(0);
                 font-size: 13px;
@@ -772,7 +860,7 @@
             }
 
             .add-to-cart-btn {
-                top: 740px;
+                top: 630px;
                 left: -100%;
                 transform: translateX(0);
                 max-width: 250px;
@@ -824,6 +912,7 @@
 
             .add-to-cart-btn {
                 max-width: 350px;
+                top: 415px;
             }
         }
     </style>
@@ -840,14 +929,16 @@
             <img src="image_2.png" alt="by MYNDVICE" class="right-corner-logo" style="position: static; transform: none;">
         </a>
 </header>
-    <nav class="version-tabs" aria-label="Site version">
+    <!-- Version switcher hidden for now (Version 1 is the public site). Remove style="display:none" to bring it back. -->
+    <nav class="version-tabs" aria-label="Site version" style="display:none">
         <a href="index.html" class="active" aria-current="page">Version 1</a>
         <a href="v2.html">Version 2</a>
     </nav>
 <footer id="footer">
         <div class="footer-buttons">
             <img src="button_play.png" alt="Play" class="footer-btn" id="playBtn">
-            <img src="button_video.png" alt="View Video" class="footer-btn" id="videoBtn">
+            <!-- TUTORIAL button hidden for now; remove style="display:none" to bring it back -->
+            <img src="button_video.png" alt="View Video" class="footer-btn" id="videoBtn" style="display:none">
         </div>
     </footer>
     
@@ -864,6 +955,20 @@
         <img class="lightbox-content" id="lightboxImage" src="placeholder.jpg" alt="Lightbox Image">
     </div>
     
+    <!-- Waitlist form — submits to a Google Sheet via Apps Script (see waitlist-apps-script.gs) -->
+    <div id="waitlistLightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <form class="waitlist-card" id="waitlistForm" novalidate>
+            <h2>Join the waitlist</h2>
+            <p class="wl-sub">Be first to know when 3-LOW drops.</p>
+            <label>Name<input type="text" name="name" autocomplete="name" maxlength="200"></label>
+            <label>Email<input type="email" name="email" autocomplete="email" required maxlength="320"></label>
+            <input type="text" name="website" class="wl-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" id="waitlistSubmit">JOIN WAITLIST</button>
+            <p class="wl-msg" id="waitlistMsg" role="status" aria-live="polite"></p>
+        </form>
+    </div>
+
     <!-- Lightbox for Game (PLAY) — iframe loads on first open -->
     <div id="gameLightbox" class="lightbox">
         <span class="lightbox-close">&times;</span>
@@ -900,18 +1005,16 @@
         <img src="image_3.gif" alt="Gameboard" style="width: 100%; height: auto; display: block;">
     </div>
     <div class="product-text">
-        <img src="image_4.png" alt="Product Text" style="width: 100%; height: auto; display: block;">
+        <img src="image_4_title.png" alt="3-LOW: The Dice Game" style="width: 100%; height: auto; display: block;">
     </div>
-    <div class="price-image">
-        <img src="image_5.png" alt="Price" style="width: 100%; height: auto; display: block;">
-    </div>
+    <!-- Price removed for now (image_5.png kept in the repo) -->
 
     <div class="product-description">
         <p>Handcrafted and made to last, this dice game fits in your daily go-bag for everyday sends</p>
         <p>the mission: roll low, think high.<br><br>3's are hot and you're only one roll away from an epic trip or a total crash out.</p>
     </div>
     <div class="add-to-cart-btn">
-        <a href="https://www.myndvice.com/shop/p/3low-dice-game">
+        <a href="https://www.myndvice.com/shop/p/3low-dice-game" id="waitlistLink">
             <button>JOIN WAITLIST</button>
         </a>
     </div>
@@ -1066,22 +1169,6 @@
                 }
             }
 
-            // Animate price image sliding in at 15% scroll
-            const priceImage = document.querySelector('.price-image');
-            if (scrollFraction >= 0.15) {
-                if (isMobile) {
-                    priceImage.classList.add('visible');
-                } else {
-                    priceImage.style.right = '100px'; // Desktop: slide to right side position
-                }
-            } else {
-                if (isMobile) {
-                    priceImage.classList.remove('visible');
-                } else {
-                    priceImage.style.right = '-100%'; // Desktop: keep off screen
-                }
-            }
-
             // Animate product description sliding in at 15% scroll
             const productDescription = document.querySelector('.product-description');
             if (scrollFraction >= 0.15) {
@@ -1221,6 +1308,57 @@
                 closeGame();
                 lightboxVideo.pause();
                 lightboxVideo.currentTime = 0;
+            }
+        });
+
+        // ---- Waitlist → Google Sheet ----
+        // Paste the Apps Script web app URL here (see waitlist-apps-script.gs).
+        // While it's empty, JOIN WAITLIST keeps linking to the shop page.
+        const WAITLIST_ENDPOINT = '';
+        const waitlistLightbox = document.getElementById('waitlistLightbox');
+        const waitlistForm = document.getElementById('waitlistForm');
+        const waitlistMsg = document.getElementById('waitlistMsg');
+        const waitlistSubmit = document.getElementById('waitlistSubmit');
+        if (WAITLIST_ENDPOINT) {
+            document.getElementById('waitlistLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                waitlistLightbox.style.display = 'flex';
+                waitlistForm.elements.email.focus();
+            });
+        }
+        waitlistLightbox.addEventListener('click', (e) => {
+            if (e.target === waitlistLightbox || e.target.classList.contains('lightbox-close')) {
+                waitlistLightbox.style.display = 'none';
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') waitlistLightbox.style.display = 'none';
+        });
+        waitlistForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = waitlistForm.elements.email.value.trim();
+            waitlistMsg.classList.remove('error');
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                waitlistMsg.textContent = 'Please enter a valid email.';
+                waitlistMsg.classList.add('error');
+                return;
+            }
+            const data = new URLSearchParams(new FormData(waitlistForm));
+            data.set('email', email);
+            data.set('source', '3low site');
+            waitlistSubmit.disabled = true;
+            waitlistMsg.textContent = 'Sending…';
+            try {
+                // Apps Script doesn't return CORS headers for every response, so send it
+                // "no-cors": the row is still written; we just can't read the reply.
+                await fetch(WAITLIST_ENDPOINT, { method: 'POST', mode: 'no-cors', body: data });
+                waitlistForm.reset();
+                waitlistMsg.textContent = "You're on the list. We'll be in touch.";
+            } catch (err) {
+                waitlistMsg.textContent = 'Something went wrong. Please try again.';
+                waitlistMsg.classList.add('error');
+            } finally {
+                waitlistSubmit.disabled = false;
             }
         });
 
