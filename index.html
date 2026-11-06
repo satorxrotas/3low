@@ -360,6 +360,12 @@
             min-height: 1.4em;
         }
 
+        .wl-note {
+            font-size: 11px;
+            opacity: 0.75;
+            margin-top: -8px;
+        }
+
         .wl-msg.error {
             color: #B3261E;
         }
@@ -966,6 +972,7 @@
             <input type="text" name="website" class="wl-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
             <button type="submit" id="waitlistSubmit">JOIN WAITLIST</button>
             <p class="wl-msg" id="waitlistMsg" role="status" aria-live="polite"></p>
+            <p class="wl-note">We'll only use your email for 3-LOW updates. Unsubscribe anytime.</p>
         </form>
     </div>
 
@@ -1314,7 +1321,7 @@
         // ---- Waitlist → Google Sheet ----
         // Paste the Apps Script web app URL here (see waitlist-apps-script.gs).
         // While it's empty, JOIN WAITLIST keeps linking to the shop page.
-        const WAITLIST_ENDPOINT = '';
+        const WAITLIST_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw9qFSKflJU-8PK2gsrHksmiE9KjAAPCyDGt153TyjmWcyJsL274vdeJ6jPvrw0goB1oA/exec';
         const waitlistLightbox = document.getElementById('waitlistLightbox');
         const waitlistForm = document.getElementById('waitlistForm');
         const waitlistMsg = document.getElementById('waitlistMsg');
