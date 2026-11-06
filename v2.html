@@ -228,11 +228,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 80px 20px 85px;
+            padding: 116px 20px 85px;
         }
 
         .video-wrap {
-            width: min(90vw, calc((100vh - 205px) * 16 / 9));
+            width: min(90vw, calc((100vh - 241px) * 16 / 9));
             aspect-ratio: 16 / 9;
             border-radius: 20px;
             overflow: hidden;
@@ -249,11 +249,11 @@
 
         @media screen and (max-width: 768px) {
             .video-section {
-                padding: 80px 16px 60px;
+                padding: 116px 16px 60px;
             }
 
             .video-wrap {
-                width: min(100%, calc((100vh - 180px) * 16 / 9));
+                width: min(100%, calc((100vh - 216px) * 16 / 9));
                 border-radius: 12px;
             }
         }
@@ -882,10 +882,31 @@
         sectionVideo.addEventListener('play', () => { videoUserPaused = false; });
 
         // Handle scroll event
+        // Animations are timed against the original 8000px scroll length so the
+        // hero → product pacing feels the same; the page itself now ends right
+        // after the video section lands, cutting the old dead scroll.
+        const VIDEO_START = 0.22; // video starts sliding up (just after the product panel settles)
+        const VIDEO_END = 0.30;   // video fully in view — page ends shortly after
+        function timelineLength() {
+            return 8000 + (window.innerWidth <= 768 ? 350 : 0) - window.innerHeight;
+        }
+        function sizeScrollContainer() {
+            const sc = document.querySelector('.scroll-container');
+            sc.style.paddingBottom = '0px';
+            sc.style.height = (timelineLength() * VIDEO_END + window.innerHeight + 200) + 'px';
+        }
+        sizeScrollContainer();
+        window.addEventListener('resize', () => {
+            sizeScrollContainer();
+            window.dispatchEvent(new Event('scroll'));
+        });
+
         window.addEventListener('scroll', () => {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollHeight = timelineLength();
             const scrollFraction = scrollTop / scrollHeight;
+            const pageScrollable = document.documentElement.scrollHeight - window.innerHeight;
+            const pageFraction = pageScrollable > 0 ? Math.min(scrollTop / pageScrollable, 1) : 0;
             
             // Move the frame container from above viewport to below viewport
             const frameContainer = document.querySelector('.frame-container');
@@ -1021,8 +1042,8 @@
                 footer.style.bottom = '-85px'; // Keep off screen
             }
 
-            // Slide video section up over the product panel (50% → 65% scroll)
-            const videoProgress = Math.min(Math.max((scrollFraction - 0.5) / 0.15, 0), 1);
+            // Slide video section up over the product panel
+            const videoProgress = Math.min(Math.max((scrollFraction - VIDEO_START) / (VIDEO_END - VIDEO_START), 0), 1);
             videoSection.style.transform = `translateY(${100 - videoProgress * 100}%)`;
             if (videoProgress === 1) {
                 if (sectionVideo.paused && !videoUserPaused) {
@@ -1034,7 +1055,7 @@
                 sectionVideo.pause();
             }
 
-            progressBar.style.width = (scrollFraction * 100) + '%';
+            progressBar.style.width = (pageFraction * 100) + '%';
             
             if (scrollFraction > 0.05) {
                 instruction.style.opacity = '0';
@@ -1116,8 +1137,7 @@
         const heroArrow = document.querySelector('.hero-arrow');
         heroArrow.addEventListener('click', () => {
             // Calculate scroll position where beige section is fully visible (20% of total scroll)
-            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const targetScroll = scrollHeight * 0.2; // 20% scroll position
+            const targetScroll = timelineLength() * 0.2; // where the beige section is fully in
             
             window.scrollTo({
                 top: targetScroll,
