@@ -27,7 +27,7 @@
         .frame-container {
             position: fixed;
             will-change: top, transform, opacity;
-            top: calc(-12vh + 40px);
+            top: -100vh; /* parked off-screen until you scroll */
             left: 50%;
             transform: translateX(-50%);
             width: 45vw;
@@ -1100,14 +1100,14 @@
             const pageScrollable = document.documentElement.scrollHeight - window.innerHeight;
             const pageFraction = pageScrollable > 0 ? Math.min(scrollTop / pageScrollable, 1) : 0;
             
-            // Dice falls through the page as you scroll: starts peeking in at the top,
-            // accelerates down the screen with a slow tumble and sway, and has fully
+            // Dice falls through the page as you scroll: hidden above the screen at the top,
+            // drops in once you start scrolling, accelerates down with a slow tumble and sway, and has fully
             // faded out by the time the video section starts sliding up.
             const frameContainer = document.querySelector('.frame-container');
             const viewportHeight = window.innerHeight;
             const diceTravel = Math.min(Math.max(scrollFraction / VIDEO_START, 0), 1); // 0 → 1 until the video arrives
-            const fall = Math.pow(diceTravel, 1.3);                                  // ease-in, like gravity
-            const startY = -viewportHeight * 0.12 + 40;
+            const fall = Math.pow(diceTravel, 1.15);                                  // ease-in, like gravity
+            const startY = -frameContainer.offsetHeight - 10; // fully above the screen at the top of the page
             const endY = viewportHeight * 0.78;
             frameContainer.style.top = (startY + (endY - startY) * fall) + 'px';
             const sway = Math.sin(diceTravel * Math.PI * 2) * Math.min(window.innerWidth * 0.06, 70);
