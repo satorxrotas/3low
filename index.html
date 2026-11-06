@@ -911,7 +911,7 @@
     </div>
     <div class="add-to-cart-btn">
         <a href="https://www.myndvice.com/shop/p/3low-dice-game">
-            <button>BUY NOW</button>
+            <button>JOIN WAITLIST</button>
         </a>
     </div>
 
@@ -1177,6 +1177,7 @@
             if (!gameFrame.getAttribute('src')) gameFrame.src = 'play.html';
             gameLightbox.style.display = 'flex';
             document.body.style.overflow = 'hidden';
+            if (!sectionVideo.paused) { autoPausing = true; sectionVideo.pause(); }
         });
         function closeGame() {
             gameLightbox.style.display = 'none';
